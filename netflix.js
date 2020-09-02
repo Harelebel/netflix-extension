@@ -51,10 +51,19 @@
   }
 
   function inject(fn) {
+
     const script = document.createElement('script')
     script.text = `(${fn.toString()})();`
     document.documentElement.appendChild(script)
   }
+  let data;
+
+  fetch('/sample/sample.json')
+    .then(res => {
+      data = res
+      console.log(data)
+    })
+    .catch(err => console.log(err))
 
   inject(init)
 })()
