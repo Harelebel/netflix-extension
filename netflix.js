@@ -9,11 +9,19 @@
             console.log(e)
             shotSkipped.push({
               "shotId": e.id,
-              "indexInMs": Number((data.segmentations.detected_shots[e.shs].ss * 1000).toFixed(0)),
+              "indexInMs": Number((data.segmentations.detected_shots[e.shs].fs/25 * 1000).toFixed(0)),
               "durationMs":
-                Number((data.segmentations.detected_shots[e.she].se * 1000).toFixed(0))
-                - Number((data.segmentations.detected_shots[e.shs].ss * 1000).toFixed(0))
+                Number((data.segmentations.detected_shots[e.she].fe/25 * 1000).toFixed(0))
+                - Number((data.segmentations.detected_shots[e.shs].fs/25 * 1000).toFixed(0))
             })
+            shotFiltered = shotSkipped.filter(function (a) {
+              var key = a.indexInMs + '|' + a.durationMs;
+              if (!this[key]) {
+                this[key] = true;
+                return true;
+              }
+            }, Object.create(null));
+
           })
         }
       })
@@ -24,6 +32,7 @@
     let toSkip = [];
     let shotSkipped = [];
     let skipTags = ["sexual"];
+    let shotFiltered = []
 
     setSkippedShots();
 
@@ -43,16 +52,17 @@
               const video = document.getElementsByTagName("video")[0]
               video.addEventListener('play', function filterMovie() {
                 reqId = requestAnimationFrame(function play() {
-                  shotSkipped.find((el, index, object) => {
+                  shotFiltered.find((el, index, object) => {
                     if (
-                      parseInt(video.currentTime * 1000) - el.indexInMs < 90 &&
-                      parseInt(video.currentTime * 1000) - el.indexInMs > 0
+                      parseInt(video.currentTime * 1000) - el.indexInMs < 150 &&
+                      parseInt(video.currentTime * 1000) - el.indexInMs > -150
                     ) {
                       console.log(
-                        `skipped scene! time diffrence is ${(video.currentTime * 1000) - el.indexInMs} current index is ${index} total are ${shotSkipped.length}`
+                        `skipped scene! time diffrence is ${(video.currentTime * 1000) - el.indexInMs} current index is ${index} total are ${shotFiltered.length}`
                       );
+                      console.log(shotFiltered)
                       //skipping
-                      player.seek((video.currentTime * 1000) + el.durationMs);
+                      player.seek((el.indexInMs) + el.durationMs);
                       // delete from object for performance 
                       object.splice(index, 1);
                       return true;
