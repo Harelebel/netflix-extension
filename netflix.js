@@ -66,23 +66,27 @@
               const video = document.getElementsByTagName("video")[0]
               // interval for checking if player is ready to filter               
               let subInterval = setInterval(() => {
-                console.log('subinteval')
                 if (player.isReady()) {
                   reqId = requestAnimationFrame(function play() {
-                    console.log(video.currentTime)
                     shotSkipped.find((el, index, object) => {
                       if (
                         parseInt(video.currentTime * 1000) - el.indexInMs < 150 &&
                         parseInt(video.currentTime * 1000) - el.indexInMs > -150
                       ) {
                         console.log(
-                          `skipped scene! time diffrence is ${(video.currentTime * 1000) - el.indexInMs} current index is ${index} total are ${shotSkipped.length}`
+                          `skipped scene! time diffrence is ${(video.currentTime * 1000) - el.indexInMs} current el is ${el.indexInMs} ${el.durationMs} `
                         );
-                        console.log(shotSkipped)
                         //skipping scene
                         player.seek((el.indexInMs) + el.durationMs);
-                        // delete from object for performance tune
-                        object.splice(index, 1);
+                        return true;
+                      }
+                      // prevent seek into the skipped scene
+                      if (
+                         parseInt(video.currentTime * 1000) > el.indexInMs &&
+                         parseInt(video.currentTime * 1000) < el.indexInMs + el.durationMs
+                      ) {
+                        player.seek((el.indexInMs) + el.durationMs);
+                        console.log(`nice try seeking to ${el.indexInMs} ${el.durationMs} `)
                         return true;
                       }
                     });
