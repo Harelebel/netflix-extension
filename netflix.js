@@ -77,23 +77,37 @@
                           `skipped scene! time diffrence is ${(video.currentTime * 1000) - el.indexInMs} current el is ${el.indexInMs} ${el.durationMs} `
                         );
                         //skipping scene
-                        player.seek((el.indexInMs) + el.durationMs);
+                        //player.seek((el.indexInMs) + el.durationMs);
+                        video.setAttribute('style', 'background:red')
+                        setTimeout(() => {
+                          video.setAttribute('style', 'background:none')
+                        }, el.durationMs)
                         return true;
                       }
-                      // prevent seek into the skipped scene
-                      if (
-                         parseInt(video.currentTime * 1000) > el.indexInMs &&
-                         parseInt(video.currentTime * 1000) < el.indexInMs + el.durationMs
-                      ) {
-                        player.seek((el.indexInMs) + el.durationMs);
-                        console.log(`nice try seeking to ${el.indexInMs} ${el.durationMs} `)
-                        return true;
-                      }
+
+
                     });
                     //requesAnimationFrame is calling back to play function 16 times in second                  
                     reqId = requestAnimationFrame(play);
                   });
                   clearInterval(subInterval)
+                  // prevent seek into the skipped scene
+                  video.onseeking = (event) => {
+                    shotSkipped.find((el, index, object) => {
+                      if (
+                        parseInt(video.currentTime * 1000) > el.indexInMs &&
+                        parseInt(video.currentTime * 1000) < el.indexInMs + el.durationMs
+                      ) {
+                        // player.seek((el.indexInMs) + el.durationMs);
+                        video.setAttribute('style', 'background:green')
+                        setTimeout(() => {
+                          video.setAttribute('style', 'background:none')
+                        },  el.indexInMs + el.durationMs - (video.currentTime * 1000))
+                        console.log(`nice try seeking to ${el.indexInMs} ${el.durationMs} `)
+                        return true;
+                      }
+                    });
+                  };
                 }
               }, 10);
               /* var stopTracking = function () {
