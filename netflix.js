@@ -77,11 +77,13 @@
                           `skipped scene! time diffrence is ${(video.currentTime * 1000) - el.indexInMs} current el is ${el.indexInMs} ${el.durationMs} `
                         );
                         //skipping scene
-                        //player.seek((el.indexInMs) + el.durationMs);
-                        video.setAttribute('style', 'background:red')
-                        setTimeout(() => {
-                          video.setAttribute('style', 'background:none')
-                        }, el.durationMs)
+                        player.seek((el.indexInMs) + el.durationMs);
+
+                        // TEST :  color video for indicate screen
+                        // video.setAttribute('style', 'background:red')
+                        // setTimeout(() => {
+                        //   video.setAttribute('style', 'background:none')
+                        // }, el.durationMs)
                         return true;
                       }
 
@@ -98,11 +100,13 @@
                         parseInt(video.currentTime * 1000) > el.indexInMs &&
                         parseInt(video.currentTime * 1000) < el.indexInMs + el.durationMs
                       ) {
-                        // player.seek((el.indexInMs) + el.durationMs);
-                        video.setAttribute('style', 'background:green')
-                        setTimeout(() => {
-                          video.setAttribute('style', 'background:none')
-                        },  el.indexInMs + el.durationMs - (video.currentTime * 1000))
+                          player.seek((el.indexInMs) + el.durationMs);
+                          
+                    // TEST :  color video for indicate screen
+                          // video.setAttribute('style', 'background:green')
+                        // setTimeout(() => {
+                        //   video.setAttribute('style', 'background:none')
+                        // },  el.indexInMs + el.durationMs - (video.currentTime * 1000))
                         console.log(`nice try seeking to ${el.indexInMs} ${el.durationMs} `)
                         return true;
                       }
