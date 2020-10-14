@@ -4,11 +4,10 @@
   "description": "Awsome One",
   "browser_action": {
     "default_title": "choose filtering level",
-    "default_popup": "popup.html",
     "default_icon": "icon.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab","tabs"
   ],
   "content_scripts": [
     {
