@@ -7,7 +7,7 @@
     "default_icon": "icon.png"
   },
   "permissions": [
-    "activeTab","tabs"
+    "activeTab","tabs","https://api.mocki.io/v1/ce5f60e2","http://18.157.136.67/api/generes/getlabels"
   ],
   "content_scripts": [
     {
